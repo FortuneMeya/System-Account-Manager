@@ -3,7 +3,7 @@ class UserManager:
     def __init__(self,file):
         self.file = file
 
-
+g
     def register_user(self,username,password,hasher):
         try:
 
