@@ -2,6 +2,9 @@ import json
 
 import bcrypt
 
+import passwordhasher
+from passwordhasher import PasswordHasher
+
 
 class UserManager:
     def __init__(self,file,hasher):
@@ -35,8 +38,5 @@ class UserManager:
         if username not in data:
             return False
         stored_hash = data[username]
-        try:
-             result= bcrypt.checkpw(password.encode(),stored_hash.encode())
-             return result
-        except (TypeError,ValueError):
-             return False
+
+        return passwordhasher.check_password(password,stored_hash)
