@@ -3,6 +3,7 @@ import json
 import bcrypt
 
 import passwordhasher
+import securitypolicy
 from passwordhasher import PasswordHasher
 
 
@@ -35,6 +36,10 @@ class UserManager:
                 data=json.load(f)
         except FileNotFoundError:
             data={}
+
+        if securitypolicy.SecurityPolicy.should_lockout(username):
+            return False
+
         if username not in data:
             return False
         stored_hash = data[username]
