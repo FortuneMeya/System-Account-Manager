@@ -4,7 +4,6 @@ import bcrypt
 
 import passwordhasher
 import securitypolicy
-from passwordhasher import PasswordHasher
 
 
 class UserManager:
