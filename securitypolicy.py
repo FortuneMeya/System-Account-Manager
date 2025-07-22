@@ -16,7 +16,9 @@ class SecurityPolicy:
         self.failed_attempts[username] = self.failed_attempts.get(username,0)+1
     def should_lockout(self,username):
         if self.failed_attempts.get(username,0)>=self.MAX_ATTEMPTS:
+            time.sleep(180)
             return True
+
         else:
             return False
     def reset_attempts(self,username):

@@ -4,7 +4,7 @@ from securitypolicy import SecurityPolicy
 #importlogger
 hasher = PasswordHasher()
 policy = SecurityPolicy()
-manager = UserManager("usernames.json", hasher, policy)
+manager = UserManager("usernames.json", hasher)
 
 print("Welcome To The Login Page")
 
@@ -18,10 +18,15 @@ while True:
         user = input("Enter Your Username:")
         passw = input("Enter Your Password:")
         manager.register_user(user,passw)
+        policy.is_password_strong(passw)
+        print("Account Successfully created ")
+
+
     elif options==2:
         user = input("Enter Your Username:")
         passw = input("Enter Your Password:")
         manager.validate_user(user,passw)
+        print("Successfully logged in")
     elif options==3:
         break
     else:
