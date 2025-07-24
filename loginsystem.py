@@ -1,10 +1,16 @@
 from usermanager import UserManager
 from passwordhasher import PasswordHasher
 from securitypolicy import SecurityPolicy
-#importlogger
+
+
+class LoginSystem:
+    def __init__(self, system):
+        self.system = system
+
+
 hasher = PasswordHasher()
 policy = SecurityPolicy()
-manager = UserManager("usernames.json", hasher)
+manager = UserManager("usernames.json", hasher,policy)
 
 print("Welcome To The Login Page")
 
@@ -16,7 +22,7 @@ while True:
         continue
     if options ==1:
         user = input("Enter Your Username:")
-        passw = input("Enter Your Password:")
+        passw = input("Enter Your Password(8 characters long with at least one digit):")
         manager.register_user(user,passw)
         policy.is_password_strong(passw)
         print("Account Successfully created ")

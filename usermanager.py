@@ -1,7 +1,5 @@
 import json
-
-from passwordhasher import PasswordHasher
-from securitypolicy import SecurityPolicy
+from json import JSONDecodeError
 
 
 class UserManager:
@@ -16,6 +14,7 @@ class UserManager:
         data = self.load_data()
         if username in data:
             return False
+        self.policy.is_password_strong(password)
         hashed_pw= self.hasher.hash_password(password)
         data[username] = hashed_pw.decode()
         self.save_data(data)
@@ -33,11 +32,15 @@ class UserManager:
              stored_hash = data[username]
         else:
             return False
+        if not self.hasher.check_password(password,stored_hash):
+            self.policy.record_failed_attempt(username)
+            return False
+        else:
+            self.policy.reset_attempts(username)
+            return True
 
 
 
-
-        return self.hasher.check_password(password,stored_hash)
 
     def load_data(self):
        try:
@@ -46,6 +49,8 @@ class UserManager:
               return data
 
        except FileNotFoundError:
+           return {}
+       except JSONDecodeError:
            return {}
 
     def save_data(self,data):
