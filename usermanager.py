@@ -1,4 +1,5 @@
 import json
+import logging
 from json import JSONDecodeError
 
 
@@ -18,29 +19,27 @@ class UserManager:
         hashed_pw= self.hasher.hash_password(password)
         data[username] = hashed_pw.decode()
         self.save_data(data)
+        logging.info(f"User registered: {username}")
         return True
 
 
 
 
-    def validate_user(self,username,password):
+    def validate_user(self, username, password):
         data = self.load_data()
         if self.policy.should_lockout(username):
+            logging.warning(f"User locked out: {username}")
             return False
-
-        if username in data:
-             stored_hash = data[username]
-        else:
+        if username not in data:
             return False
-        if not self.hasher.check_password(password,stored_hash):
+        stored_hash = data[username]
+        if not self.hasher.check_password(password, stored_hash):
             self.policy.record_failed_attempt(username)
+            logging.warning(f"Failed login attempt for user: {username}")
             return False
-        else:
-            self.policy.reset_attempts(username)
-            return True
-
-
-
+        self.policy.reset_attempts(username)
+        logging.info(f"User logged in: {username}")
+        return True
 
     def load_data(self):
        try:

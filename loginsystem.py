@@ -1,6 +1,7 @@
 from usermanager import UserManager
 from passwordhasher import PasswordHasher
 from securitypolicy import SecurityPolicy
+import getpass
 
 
 class LoginSystem:
@@ -12,7 +13,7 @@ hasher = PasswordHasher()
 policy = SecurityPolicy()
 manager = UserManager("usernames.json", hasher,policy)
 
-print("Welcome To The Login Page")
+print("\nWelcome To The Login Page\n")
 
 while True:
     try:
@@ -21,18 +22,23 @@ while True:
         print('Invalid option, please pick a number between 1-3')
         continue
     if options ==1:
-        user = input("Enter Your Username:")
-        passw = input("Enter Your Password(8 characters long with at least one digit):")
-        manager.register_user(user,passw)
-        policy.is_password_strong(passw)
-        print("Account Successfully created ")
+        user = input("Enter Your Username:").strip()
+        passw = getpass.getpass("Enter Your Password(8 characters long with at least one digit):")
+
+        if manager.register_user(user,passw):
+            print("Account Successfully created")
+        else:
+            print("Username already exists")
+
 
 
     elif options==2:
         user = input("Enter Your Username:")
         passw = input("Enter Your Password:")
-        manager.validate_user(user,passw)
-        print("Successfully logged in")
+        if manager.validate_user(user,passw):
+             print("Successfully logged in")
+        else:
+            print("Login failed. Check username and password")
     elif options==3:
         break
     else:
